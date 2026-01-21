@@ -49,6 +49,11 @@ struct Distance {
 
 queue<Distance*> to_check;
 
+float calc_distance(int y1, int x1, int y2, int x2) {
+  return (float)(abs(y2 - y1) + abs(x2 - x1));
+  // return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+}
+
 int main() {
   ifstream raw("_srcdata.txt");
   raw >> width >> height;
@@ -60,8 +65,6 @@ int main() {
   }
   cout << "Data initialized.\n";
   raw.close();
-
-  for (int t = 0; t < 100; t++) {
 
   float* proximity = new float[width * height] {};
   for (uint i = 0; i < width * height; i++) {
@@ -78,77 +81,48 @@ int main() {
     Distance* coords = to_check.front();
     to_check.pop();
     
-    float current_proximity = proximity[coords->x * width + coords->y];
+    float current_proximity = proximity[coords->y * width + coords->x];
     // if (current_proximity == 0) continue;
     float proximity_max = 250.f;
 
-    cout << "aa" << endl;
-    float distance_right = sqrt((coords->x + 1 - coords->originX) * (coords->x + 1 - coords->originX) + (coords->y - coords->originY) * (coords->y - coords->originY));
-    float distance_left = sqrt((coords->x - 1 - coords->originX) * (coords->x - 1 - coords->originX) + (coords->y - coords->originY) * (coords->y - coords->originY));
-    float distance_up = sqrt((coords->x - coords->originX) * (coords->x - coords->originX) + (coords->y - 1 - coords->originY) * (coords->y - 1 - coords->originY));
-    float distance_down = sqrt((coords->x - coords->originX) * (coords->x - coords->originX) + (coords->y + 1 - coords->originY) * (coords->y + 1 - coords->originY));
+    float distance_right = calc_distance(coords->y, coords->x + 1, coords->originY, coords->originX);
+    float distance_left = calc_distance(coords->y, coords->x - 1, coords->originY, coords->originX);
+    float distance_up = calc_distance(coords->y - 1, coords->x, coords->originY, coords->originX);
+    float distance_down = calc_distance(coords->y + 1, coords->x, coords->originY, coords->originX);
 
     float proximity_right = max(proximity_max - distance_right, 0.f) / proximity_max * 255.f;
     float proximity_left = max(proximity_max - distance_left, 0.f) / proximity_max * 255.f;
     float proximity_up = max(proximity_max - distance_up, 0.f) / proximity_max * 255.f;
     float proximity_down = max(proximity_max - distance_down, 0.f) / proximity_max * 255.f;
 
-    cout << "bb" << endl;
-    cout << "x " << coords->x << " y " << coords->y << endl;
     if (coords->x + 1 < width && proximity[coords->y * width + coords->x + 1] < proximity_right) {
-    cout << "x " << coords->x << endl;
       proximity[coords->y * width + coords->x + 1] = proximity_right;
-      to_check.push(new Distance(coords->x + 1, coords->y, coords->originX, coords->originY));
+      to_check.push(new Distance(coords->y, coords->x + 1, coords->originY, coords->originX));
     }
-    cout << "cc" << endl;
     if (coords->x > 0 && proximity[coords->y * width + coords->x - 1] < proximity_left) {
-    cout << "x " << coords->x << endl;
       proximity[coords->y * width + coords->x - 1] = proximity_left;
-      to_check.push(new Distance(coords->x - 1, coords->y, coords->originX, coords->originY));
+      to_check.push(new Distance(coords->y, coords->x - 1, coords->originY, coords->originX));
     }
-    cout << "dd" << endl;
     if (coords->y > 0 && proximity[(coords->y - 1) * width + coords->x] < proximity_up) {
-    cout << "y " << coords->y << endl;
       proximity[(coords->y - 1) * width + coords->x] = proximity_up;
-      to_check.push(new Distance(coords->x, coords->y - 1, coords->originX, coords->originY));
+      to_check.push(new Distance(coords->y - 1, coords->x, coords->originY, coords->originX));
     }
-    cout << "ee" << endl;
     if (coords->y + 1 < height && proximity[(coords->y + 1) * width + coords->x] < proximity_down) {
-    cout << "y " << coords->y << endl;
       proximity[(coords->y + 1) * width + coords->x] = proximity_down;
-      to_check.push(new Distance(coords->x, coords->y + 1, coords->originX, coords->originY));
+      to_check.push(new Distance(coords->y + 1, coords->x, coords->originY, coords->originX));
     }
     delete coords;
-
-    // if (coords.second + 1 < width && proximity[coords.first * width + coords.second + 1] < current_proximity - proximity_mod) {
-    //   proximity[coords.first * width + coords.second + 1] = current_proximity - proximity_mod;
-    //   to_check.push(pair<uint, uint>(coords.first, coords.second + 1));
-    // }
-    // if (coords.second > 0 && proximity[coords.first * width + coords.second - 1] < current_proximity - proximity_mod) {
-    //   proximity[coords.first * width + coords.second - 1] = current_proximity - proximity_mod;
-    //   to_check.push(pair<uint, uint>(coords.first, coords.second - 1));
-    // }
-    // if (coords.first + 1 < height && proximity[(coords.first + 1) * width + coords.second] < current_proximity - proximity_mod) {
-    //   proximity[(coords.first + 1) * width + coords.second] = current_proximity - proximity_mod;
-    //   to_check.push(pair<uint, uint>(coords.first + 1, coords.second));
-    // }
-    // if (coords.first > 0 && proximity[(coords.first - 1) * width + coords.second] < current_proximity - proximity_mod) {
-    //   proximity[(coords.first - 1) * width + coords.second] = current_proximity - proximity_mod;
-    //   to_check.push(pair<uint, uint>(coords.first - 1, coords.second));
-    // }
   }
 
   uint8_t* proximity_data = new uint8_t[width * height];
   for (int i = 0; i < width * height; i++) {
-    proximity_data[i] = (uint8_t)proximity[i];
+    proximity_data[i] = (uint8_t)(proximity[i] + .5f);
   }
 
-  creategrayscale("output_test" + to_string(t) + ".ppm", proximity_data);
+  creategrayscale("output_test.ppm", proximity_data);
 
   delete[] proximity;
   delete[] proximity_data;
-
-  }
 
   return 0;
 }
