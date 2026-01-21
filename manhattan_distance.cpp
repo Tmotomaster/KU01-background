@@ -9,6 +9,8 @@ typedef unsigned int uint;
 
 using namespace std;
 
+const float proximity_max = 250.f;
+
 uint width, height;
 
 void createppm(const string path, uint8_t* data) {
@@ -83,7 +85,6 @@ int main() {
     
     float current_proximity = proximity[coords->y * width + coords->x];
     // if (current_proximity == 0) continue;
-    float proximity_max = 250.f;
 
     float distance_right = calc_distance(coords->y, coords->x + 1, coords->originY, coords->originX);
     float distance_left = calc_distance(coords->y, coords->x - 1, coords->originY, coords->originX);
