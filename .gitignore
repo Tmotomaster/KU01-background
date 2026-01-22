@@ -1,6 +1,6 @@
 .vscode/
 
 # outputs
-*.exe
-*.out
+a.exe
+a.out
 _srcdata.txt
