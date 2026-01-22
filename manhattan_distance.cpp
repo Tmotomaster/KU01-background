@@ -5,6 +5,8 @@
 #include <queue>
 #include <cmath>
 
+#include "lookup_colors.h"
+
 typedef unsigned int uint;
 
 using namespace std;
@@ -54,6 +56,15 @@ queue<Distance*> to_check;
 float calc_distance(int y1, int x1, int y2, int x2) {
   return (float)(abs(y2 - y1) + abs(x2 - x1));
   // return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+}
+
+uint8_t* generate_color(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 2) * 255.f);
+  const float* values = inferno_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
 }
 
 int main() {
@@ -115,12 +126,18 @@ int main() {
     delete coords;
   }
 
-  uint8_t* proximity_data = new uint8_t[width * height];
+  uint8_t* proximity_data = new uint8_t[width * height * 3];
+  cout << "Converting proximity to colors" << endl;
   for (int i = 0; i < width * height; i++) {
-    proximity_data[i] = (uint8_t)(proximity[i] + .5f);
+    // proximity_data[i] = (uint8_t)(proximity[i] + .5f);
+    uint8_t* result = generate_color((uint8_t)(proximity[i] + .5f));
+    proximity_data[i*3  ] = result[0];
+    proximity_data[i*3+1] = result[1];
+    proximity_data[i*3+2] = result[2];
+    delete[] result;
   }
 
-  creategrayscale("output_test.ppm", proximity_data);
+  createppm("output_test.ppm", proximity_data);
 
   delete[] proximity;
   delete[] proximity_data;
