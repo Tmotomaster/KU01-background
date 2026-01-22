@@ -1,8 +1,11 @@
+#include <cstdint>
+#include <cmath>
+
 /*
 * Source: Matplotlib from Python
 */
 
-const float magma_colors[256][3] = {
+const float _magma_colors[256][3] = {
   {0.001462, 0.000466, 0.013866},
   {0.002258, 0.001295, 0.018331},
   {0.003279, 0.002305, 0.023708},
@@ -261,7 +264,7 @@ const float magma_colors[256][3] = {
   {0.987053, 0.991438, 0.749504}
 };
 
-const float inferno_colors[256][3] = {
+const float _inferno_colors[256][3] = {
   {0.001462, 0.000466, 0.013866},
   {0.002267, 0.001270, 0.018570},
   {0.003299, 0.002249, 0.024239},
@@ -520,7 +523,7 @@ const float inferno_colors[256][3] = {
   {0.988362, 0.998364, 0.644924}
 };
 
-const float plasma_colors[256][3] = {
+const float _plasma_colors[256][3] = {
   {0.050383, 0.029803, 0.527975},
   {0.063536, 0.028426, 0.533124},
   {0.075353, 0.027206, 0.538007},
@@ -779,7 +782,7 @@ const float plasma_colors[256][3] = {
   {0.940015, 0.975158, 0.131326}
 };
 
-const float viridis_colors[256][3] = {
+const float _viridis_colors[256][3] = {
   {0.267004, 0.004874, 0.329415},
   {0.268510, 0.009605, 0.335427},
   {0.269944, 0.014625, 0.341379},
@@ -1038,7 +1041,7 @@ const float viridis_colors[256][3] = {
   {0.993248, 0.906157, 0.143936}
 };
 
-const float cividis_colors[256][3] = {
+const float _cividis_colors[256][3] = {
   {0.000000, 0.135112, 0.304751},
   {0.000000, 0.138068, 0.311105},
   {0.000000, 0.141013, 0.317579},
@@ -1816,7 +1819,7 @@ const float _twilight_colors[512][3] = { // TODO
 //                           _twilight_data{:len(_twilight_data)//2})
 // _twilight_shifted_data.reverse()
 
-const float turbo_colors[256][3] = {
+const float _turbo_colors[256][3] = {
   {0.18995, 0.07176, 0.23217},
   {0.19483, 0.08339, 0.26149},
   {0.19956, 0.09498, 0.29024},
@@ -2074,3 +2077,92 @@ const float turbo_colors[256][3] = {
   {0.49321, 0.01963, 0.00955},
   {0.47960, 0.01583, 0.01055}
 };
+
+uint8_t* magma_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _magma_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* inferno_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _inferno_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* plasma_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _plasma_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* viridis_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _viridis_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* cividis_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _cividis_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+// twilight (TODO)
+uint8_t* twilight_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _twilight_colors[2 * value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* blue_twilight_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _twilight_colors[255 - value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* red_twilight_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _twilight_colors[255 + value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+uint8_t* turbo_colors(uint8_t v) {
+  uint8_t value = (uint8_t)(pow((double)v / 255, 1) * 255.f);
+  const float* values = _turbo_colors[value];
+  uint8_t r = (uint)(values[0] * 255.f + .5f);
+  uint8_t g = (uint)(values[1] * 255.f + .5f);
+  uint8_t b = (uint)(values[2] * 255.f + .5f);
+  return new uint8_t[3] {r, g, b};
+}
+
+
+// generated colors
+
+uint8_t* grayscale_colors(uint8_t v) {
+  return new uint8_t[3] {v, v, v};
+}
