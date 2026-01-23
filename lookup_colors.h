@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <cmath>
 
+typedef unsigned int uint;
+
 /*
 * Source: Matplotlib from Python
 */
