@@ -74,7 +74,7 @@ int main() {
   float* proximity = new float[width * height] {};
   for (uint i = 0; i < width * height; i++) {
     // cout << original[3*i  ] << endl;
-    if (original[3*i  ] > 0) {
+    if (original[3*i  ] > 127) {
       // cout << original[0] << endl;
       to_check.push(new Distance(i / width, i % width, i / width, i % width));
       // to_check.push(pair<uint, uint> {i / width, i % width});
