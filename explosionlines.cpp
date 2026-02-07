@@ -12,6 +12,9 @@ using namespace std;
 const uint width = 3840;
 const uint height = 2160;
 
+const uint centerX = width >> 1;
+const uint centerY = height >> 1;
+
 const uint particle_count = 10000;
 const uint plength_min = 50;
 const uint plength_var = 250;
@@ -32,10 +35,6 @@ int main() {
 
   uint8_t* original = new uint8_t[width * height * 3];
 
-  int centerX = width >> 1;
-  int centerY = height >> 1;
-
-
   for (uint t = 0; t < particle_count; t++) {
     int x = rand() % width;
     int y = rand() % height;
@@ -51,7 +50,7 @@ int main() {
 
     if (abs(normX) > abs(normY)) {
       for (int i = 0; i < abs(normX * length); i++) {
-        int actualX = x + (int)(normX * i + .5f);
+        int actualX = x + (normX < 0 ? -i : i);
         int actualY = y + (int)(i / abs(normX * length) * normY * length + .5f);
 
         if (actualX < 0 || actualX >= width || actualY < 0 || actualY >= height) break;
@@ -63,7 +62,7 @@ int main() {
     } else {
       for (int i = 0; i < abs(normY * length); i++) {
         int actualX = x + (int)(i / abs(normY * length) * normX * length + .5f);
-        int actualY = y + (int)(normY * i + .5f);
+        int actualY = y + (normY < 0 ? -i : i);
 
         if (actualX < 0 || actualX >= width || actualY < 0 || actualY >= height) break;
 
