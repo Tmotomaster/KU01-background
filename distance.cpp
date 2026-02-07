@@ -129,7 +129,7 @@ int main() {
     delete[] result;
   }
 
-  createppm("output/output_test.ppm", proximity_data);
+  createppm("output/distance_output.ppm", proximity_data);
 
   delete[] proximity;
   delete[] proximity_data;
