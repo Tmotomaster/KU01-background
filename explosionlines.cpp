@@ -73,7 +73,7 @@ int main() {
     }
   }
 
-  createppm("sustest.ppm", original);
+  createppm("output/explosionlines_output.ppm", original);
 
 
   return 0;
