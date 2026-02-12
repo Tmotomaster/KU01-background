@@ -57,6 +57,7 @@ float calc_distance(int y1, int x1, int y2, int x2) {
   // return (float)(abs(y2 - y1) + abs(x2 - x1)); // Manhattan
   return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // Euclidean
   // return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) + abs(y2 - y1); // Flatter
+  // return (y2 - y1 < 0 || x2 - x1 > 0) ? proximity_max : sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // No bottom left
 }
 
 int main() {
