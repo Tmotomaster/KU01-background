@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <cstdlib>
 #include <string>
 #include <queue>
 #include <cmath>
@@ -37,6 +38,20 @@ void creategrayscale(const string path, uint8_t* data) {
   cout << "Generated " << path << endl;
 }
 
+#ifndef _WIN32
+#include <sys/wait.h>
+#endif
+
+bool system_succeeded(int value) {
+  if (value == -1) return false;
+
+  #ifdef _WIN32
+  return (value == 0);
+  #else
+  return (WIFEXITED(value) && WEXITSTATUS(value) == 0);
+  #endif
+}
+
 struct Distance {
   int y;
   int x;
@@ -61,6 +76,12 @@ float calc_distance(int y1, int x1, int y2, int x2) {
 }
 
 int main() {
+  int exitcode = system("python3 imgtodata.py");
+  if (!system_succeeded(exitcode)) {
+    cout << "Python program terminated early" << endl;
+    return 1;
+  }
+
   ifstream raw("_srcdata.txt");
   raw >> width >> height;
   uint8_t* original = new uint8_t[width * height * 3];
@@ -131,6 +152,8 @@ int main() {
   }
 
   createppm("output/distance_output.ppm", proximity_data);
+  exitcode = system("pnmtopng output/distance_output.ppm > output/distance_output.png");
+  cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
 
   delete[] proximity;
   delete[] proximity_data;
