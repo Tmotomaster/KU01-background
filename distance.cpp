@@ -5,6 +5,7 @@
 #include <string>
 #include <queue>
 #include <cmath>
+#include <cstring>
 
 #include "lookup_colors.h"
 
@@ -75,14 +76,33 @@ float calc_distance(int y1, int x1, int y2, int x2) {
   // return (y2 - y1 < 0 || x2 - x1 > 0) ? proximity_max : sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // No bottom left
 }
 
-int main() {
-  int exitcode = system("python3 imgtodata.py");
-  if (!system_succeeded(exitcode)) {
-    cout << "Python program terminated early" << endl;
-    return 1;
+int main(int argc, char** argv) {
+  bool asking = true;
+  string outputfile = "output/distance_output";
+  bool reading1 = false;
+  string inputppm;
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--input") == 0 || strcmp(argv[i], "-i") == 0) {
+      asking = false;
+      reading1 = true;
+    } else if (reading1) {
+      inputppm = argv[i];
+      reading1 = false;
+    } else if (strcmp(argv[i], "--noask") == 0 || strcmp(argv[i], "-n") == 0) {
+      asking = false;
+    } else {
+      outputfile = argv[i];
+    }
+  }
+  if (asking && inputppm == "") {
+    int exitcode = system("python3 imgtodata.py");
+    if (!system_succeeded(exitcode)) {
+      cout << "Python program terminated early" << endl;
+      return 1;
+    }
   }
 
-  ifstream raw("_srcdata.ppm", ios::binary);
+  ifstream raw(inputppm != "" ? inputppm : "_srcdata.ppm", ios::binary);
   string __magic;
   int __maxval;
   raw >> __magic >> width >> height >> __maxval;
@@ -150,8 +170,8 @@ int main() {
     delete[] result;
   }
 
-  createppm("output/distance_output.ppm", proximity_data);
-  exitcode = system("pnmtopng output/distance_output.ppm > output/distance_output.png");
+  createppm(outputfile + ".ppm", proximity_data);
+  int exitcode = system(("pnmtopng " + outputfile + ".ppm > " + outputfile + ".png").c_str());
   cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
 
   delete[] proximity;
