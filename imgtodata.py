@@ -1,15 +1,31 @@
 from PIL import Image, ImageOps
 
-def main():
+def ask_for_img():
   path = input("What is the path to the desired image: ")
-  raw_img = Image.open(path, "r")
-  img = raw_img.convert("RGB")
-  ImageOps.exif_transpose(img)
+  if path == "":
+    return None
+  try:
+    raw_img = Image.open(path, "r")
+    img = raw_img.convert("RGB")
+    ImageOps.exif_transpose(img)
+    raw_img.close()
+    return img
+  except OSError:
+    print("Error loading image. Please try again.")
+    return ask_for_img()
+
+def main():
+  img = ask_for_img()
+  if img == None:
+    return
+  # path = input("What is the path to the desired image: ")
+  # raw_img = Image.open(path, "r")
+  # img = raw_img.convert("RGB")
+  # ImageOps.exif_transpose(img)
   
   data = img.getdata()
   width = img.width
   height = img.height
-  raw_img.close()
 
   datafile = open("_srcdata.txt", "w", encoding="utf-8")
   datafile.write(f"{width} {height}\n")
