@@ -82,15 +82,14 @@ int main() {
     return 1;
   }
 
-  ifstream raw("_srcdata.txt");
-  raw >> width >> height;
+  ifstream raw("_srcdata.ppm", ios::binary);
+  string __magic;
+  int __maxval;
+  raw >> __magic >> width >> height >> __maxval;
+  raw.ignore(1);
   uint8_t* original = new uint8_t[width * height * 3];
-  for (uint i = 0; i < width * height * 3; i++) {
-    uint value;
-    raw >> value;
-    original[i] = value;
-  }
-  cout << "Data initialized.\n";
+  raw.read((char*)original, width * height * 3);
+  cout << "Data initialized." << endl;
   raw.close();
 
   float* proximity = new float[width * height] {};
