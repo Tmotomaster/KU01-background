@@ -18,19 +18,17 @@ def main():
   img = ask_for_img()
   if img == None:
     return
-  # path = input("What is the path to the desired image: ")
-  # raw_img = Image.open(path, "r")
-  # img = raw_img.convert("RGB")
-  # ImageOps.exif_transpose(img)
   
   data = img.getdata()
   width = img.width
   height = img.height
 
-  datafile = open("_srcdata.txt", "w", encoding="utf-8")
-  datafile.write(f"{width} {height}\n")
+  datafile = open("_srcdata.ppm", "wb")
+  datafile.write(f"P6 {width} {height}".encode("utf-8") + b"\n255\n")
   for d in data:
-    datafile.write(f"{d[0]} {d[1]} {d[2]}\n")
+    datafile.write(d[0].to_bytes(1))
+    datafile.write(d[1].to_bytes(1))
+    datafile.write(d[2].to_bytes(1))
   datafile.close()
 
 if __name__ == "__main__":
