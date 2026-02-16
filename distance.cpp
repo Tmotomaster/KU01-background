@@ -13,7 +13,7 @@ typedef unsigned int uint;
 
 using namespace std;
 
-const float proximity_max = 250.f;
+// const float proximity_max = 250.f;
 
 uint width, height;
 
@@ -82,6 +82,8 @@ int main(int argc, char** argv) {
   string outputfile = "output/distance_output";
   bool reading1 = false;
   string inputppm;
+  bool reading_prox = false;
+  double proximity_max = 250.;
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "--input") == 0 || strcmp(argv[i], "-i") == 0) {
       asking = false;
@@ -89,6 +91,11 @@ int main(int argc, char** argv) {
     } else if (reading1) {
       inputppm = argv[i];
       reading1 = false;
+    } else if (strcmp(argv[i], "--proximity_max") == 0 || strcmp(argv[i], "-p") == 0) {
+      reading_prox = true;
+    } else if (reading_prox) {
+      proximity_max = atof(argv[i]);
+      reading_prox = false;
     } else if (strcmp(argv[i], "--noask") == 0 || strcmp(argv[i], "-n") == 0) {
       asking = false;
     } else if (strcmp(argv[i], "--dontpng") == 0 || strcmp(argv[i], "-d") == 0) {
@@ -138,10 +145,10 @@ int main(int argc, char** argv) {
     float distance_up = calc_distance(coords->y - 1, coords->x, coords->originY, coords->originX);
     float distance_down = calc_distance(coords->y + 1, coords->x, coords->originY, coords->originX);
 
-    float proximity_right = max(proximity_max - distance_right, 0.f) / proximity_max * 255.f;
-    float proximity_left = max(proximity_max - distance_left, 0.f) / proximity_max * 255.f;
-    float proximity_up = max(proximity_max - distance_up, 0.f) / proximity_max * 255.f;
-    float proximity_down = max(proximity_max - distance_down, 0.f) / proximity_max * 255.f;
+    float proximity_right = max(proximity_max - distance_right, 0.) / proximity_max * 255.;
+    float proximity_left = max(proximity_max - distance_left, 0.) / proximity_max * 255.;
+    float proximity_up = max(proximity_max - distance_up, 0.) / proximity_max * 255.;
+    float proximity_down = max(proximity_max - distance_down, 0.) / proximity_max * 255.;
 
     if (coords->x + 1 < width && proximity[coords->y * width + coords->x + 1] < proximity_right) {
       proximity[coords->y * width + coords->x + 1] = proximity_right;
