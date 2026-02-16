@@ -69,7 +69,7 @@ struct Distance {
 
 queue<Distance*> to_check;
 
-float calc_distance(int y1, int x1, int y2, int x2) {
+double calc_distance(int y1, int x1, int y2, int x2) {
   // return (float)(abs(y2 - y1) + abs(x2 - x1)); // Manhattan
   return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // Euclidean
   // return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) + abs(y2 - y1); // Flatter
@@ -122,14 +122,14 @@ int main(int argc, char** argv) {
   cout << "Data initialized." << endl;
   raw.close();
 
-  float* proximity = new float[width * height] {};
+  double* proximity = new double[width * height] {};
   for (uint i = 0; i < width * height; i++) {
     // cout << original[3*i  ] << endl;
     if (original[3*i  ] > 127) {
       // cout << original[0] << endl;
       to_check.push(new Distance(i / width, i % width, i / width, i % width));
       // to_check.push(pair<uint, uint> {i / width, i % width});
-      proximity[i] = 255.f;
+      proximity[i] = 255.;
     }
   }
 
@@ -137,18 +137,18 @@ int main(int argc, char** argv) {
     Distance* coords = to_check.front();
     to_check.pop();
     
-    float current_proximity = proximity[coords->y * width + coords->x];
+    double current_proximity = proximity[coords->y * width + coords->x];
     // if (current_proximity == 0) continue;
 
-    float distance_right = calc_distance(coords->y, coords->x + 1, coords->originY, coords->originX);
-    float distance_left = calc_distance(coords->y, coords->x - 1, coords->originY, coords->originX);
-    float distance_up = calc_distance(coords->y - 1, coords->x, coords->originY, coords->originX);
-    float distance_down = calc_distance(coords->y + 1, coords->x, coords->originY, coords->originX);
+    double distance_right = calc_distance(coords->y, coords->x + 1, coords->originY, coords->originX);
+    double distance_left = calc_distance(coords->y, coords->x - 1, coords->originY, coords->originX);
+    double distance_up = calc_distance(coords->y - 1, coords->x, coords->originY, coords->originX);
+    double distance_down = calc_distance(coords->y + 1, coords->x, coords->originY, coords->originX);
 
-    float proximity_right = max(proximity_max - distance_right, 0.) / proximity_max * 255.;
-    float proximity_left = max(proximity_max - distance_left, 0.) / proximity_max * 255.;
-    float proximity_up = max(proximity_max - distance_up, 0.) / proximity_max * 255.;
-    float proximity_down = max(proximity_max - distance_down, 0.) / proximity_max * 255.;
+    double proximity_right = max(proximity_max - distance_right, 0.) / proximity_max * 255.;
+    double proximity_left = max(proximity_max - distance_left, 0.) / proximity_max * 255.;
+    double proximity_up = max(proximity_max - distance_up, 0.) / proximity_max * 255.;
+    double proximity_down = max(proximity_max - distance_down, 0.) / proximity_max * 255.;
 
     if (coords->x + 1 < width && proximity[coords->y * width + coords->x + 1] < proximity_right) {
       proximity[coords->y * width + coords->x + 1] = proximity_right;
@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
   cout << "Converting proximity to colors" << endl;
   for (int i = 0; i < width * height; i++) {
     // proximity_data[i] = (uint8_t)(proximity[i] + .5f);
-    uint8_t* result = grayscale_colors(pow((double)proximity[i] / 255, 1) * 255.f);
+    uint8_t* result = grayscale_colors(pow((double)proximity[i] / 255, 1) * 255.);
     proximity_data[i*3  ] = result[0];
     proximity_data[i*3+1] = result[1];
     proximity_data[i*3+2] = result[2];
