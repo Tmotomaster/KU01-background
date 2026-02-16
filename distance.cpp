@@ -78,6 +78,7 @@ float calc_distance(int y1, int x1, int y2, int x2) {
 
 int main(int argc, char** argv) {
   bool asking = true;
+  bool dopng = true;
   string outputfile = "output/distance_output";
   bool reading1 = false;
   string inputppm;
@@ -90,6 +91,8 @@ int main(int argc, char** argv) {
       reading1 = false;
     } else if (strcmp(argv[i], "--noask") == 0 || strcmp(argv[i], "-n") == 0) {
       asking = false;
+    } else if (strcmp(argv[i], "--dontpng") == 0 || strcmp(argv[i], "-d") == 0) {
+      dopng = false;
     } else {
       outputfile = argv[i];
     }
@@ -171,8 +174,10 @@ int main(int argc, char** argv) {
   }
 
   createppm(outputfile + ".ppm", proximity_data);
-  int exitcode = system(("pnmtopng " + outputfile + ".ppm > " + outputfile + ".png").c_str());
-  cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
+  if (dopng) {
+    int exitcode = system(("pnmtopng " + outputfile + ".ppm > " + outputfile + ".png").c_str());
+    cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
+  }
 
   delete[] proximity;
   delete[] proximity_data;
