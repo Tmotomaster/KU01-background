@@ -27,18 +27,6 @@ void createppm(const string path, uint8_t* data) {
   cout << "Generated " << path << endl;
 }
 
-void creategrayscale(const string path, uint8_t* data) {
-  ofstream f(path, ios::binary);
-  f << "P6\n" << width << ' ' << height << "\n255\n";
-  for (uint i = 0; i < width * height; i++) {
-    f << data[i];
-    f << data[i];
-    f << data[i];
-  }
-  f.close();
-  cout << "Generated " << path << endl;
-}
-
 #ifndef _WIN32
 #include <sys/wait.h>
 #endif
