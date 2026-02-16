@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 using namespace std;
 
 typedef unsigned int uint;
@@ -34,21 +35,27 @@ bool system_succeeded(int value) {
 
 // Arg order: maskable, mask, output (optional)
 int main(int argc, char** argv) {
-  if (argc != 3 && argc != 4) {
+  if (argc < 3) {
     cout << "You need to enter 2 or 3 extra arguments! Terminating." << endl;
     return 1;
   }
-
+  uint scanned_args = 0;
+  bool dopng = true;
   string maskable_path;
   string mask_path;
   string output_path = "output/mask_output";
-  for (int i = 1; i < argc; i++) {
-    if (i == 1) {
-      maskable_path = argv[i];
-    } else if (i == 2) {
-      mask_path = argv[i];
+  for (uint i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--dontpng") == 0 || strcmp(argv[i], "-d") == 0) {
+      dopng = false;
     } else {
-      output_path = argv[i];
+      if (scanned_args == 0) {
+        maskable_path = argv[i];
+      } else if (scanned_args == 1) {
+        mask_path = argv[i];
+      } else if (scanned_args == 2) {
+        output_path = argv[i];
+      }
+      ++scanned_args;
     }
   }
 
@@ -83,8 +90,10 @@ int main(int argc, char** argv) {
   }
 
   createppm(output_path + ".ppm", output);
-  int exitcode = system(("pnmtopng " + output_path + ".ppm > " + output_path + ".png").c_str());
-  cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
+  if (dopng) {
+    int exitcode = system(("pnmtopng " + output_path + ".ppm > " + output_path + ".png").c_str());
+    cout << (system_succeeded(exitcode) ? "Generated the PNG version." : "Error: The PNG was NOT generated due to an error.") << endl;
+  }
 
   return 0;
 }
