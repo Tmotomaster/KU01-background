@@ -143,14 +143,12 @@ int main(int argc, char** argv) {
 
   double* proximity = new double[width * height] {};
   for (uint i = 0; i < width * height; i++) {
-    // cout << original[3*i  ] << endl;
-    if (original[3*i  ] > 127) {
-      // cout << original[0] << endl;
+    if (original[3*i+2] > 127) { // blue channel value
       to_check.push(new Distance(i / width, i % width, i / width, i % width));
-      // to_check.push(pair<uint, uint> {i / width, i % width});
       proximity[i] = 255.;
     }
   }
+  delete[] original;
 
   while (!to_check.empty()) {
     Distance* coords = to_check.front();
@@ -191,8 +189,7 @@ int main(int argc, char** argv) {
   uint8_t* proximity_data = new uint8_t[width * height * 3];
   cout << "Converting proximity to colors" << endl;
   for (int i = 0; i < width * height; i++) {
-    // proximity_data[i] = (uint8_t)(proximity[i] + .5f);
-    uint8_t* result = grayscale_colors(pow((double)proximity[i] / 255, 1) * 255.);
+    uint8_t* result = alphamappable_colors(pow((double)proximity[i] / 255, 1) * 255.);
     proximity_data[i*3  ] = result[0];
     proximity_data[i*3+1] = result[1];
     proximity_data[i*3+2] = result[2];

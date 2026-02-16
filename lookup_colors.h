@@ -2168,3 +2168,7 @@ uint8_t* turbo_colors(uint8_t v) {
 uint8_t* grayscale_colors(uint8_t v) {
   return new uint8_t[3] {v, v, v};
 }
+
+uint8_t* alphamappable_colors(uint8_t v) { // BLUE: alpha ; GREEN: value ; RED: unused (arbitrary value)
+  return new uint8_t[3] {128, v, 255};
+}
