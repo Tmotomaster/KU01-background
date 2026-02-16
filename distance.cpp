@@ -69,11 +69,23 @@ struct Distance {
 
 queue<Distance*> to_check;
 
+double proximity_max = 250.;
+
+int distance_algorithm = 0;
+
 double calc_distance(int y1, int x1, int y2, int x2) {
-  // return (float)(abs(y2 - y1) + abs(x2 - x1)); // Manhattan
-  return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // Euclidean
-  // return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) + abs(y2 - y1); // Flatter
-  // return (y2 - y1 < 0 || x2 - x1 > 0) ? proximity_max : sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)); // No bottom left
+  switch (distance_algorithm) {
+    case 1: // Manhattan
+      return (double)(abs(y2 - y1) + abs(x2 - x1));
+    case 2: // Square
+      return (double)max(abs(y2 - y1), abs(x2 - x1));
+    case 3: // Flatter
+      return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) + abs(y2 - y1);
+    case 4: // No bottom left
+      return (y2 - y1 < 0 || x2 - x1 > 0) ? proximity_max : sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+    default: // Euclidean
+      return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+  }
 }
 
 int main(int argc, char** argv) {
@@ -83,7 +95,6 @@ int main(int argc, char** argv) {
   bool reading1 = false;
   string inputppm;
   bool reading_prox = false;
-  double proximity_max = 250.;
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "--input") == 0 || strcmp(argv[i], "-i") == 0) {
       asking = false;
@@ -100,6 +111,14 @@ int main(int argc, char** argv) {
       asking = false;
     } else if (strcmp(argv[i], "--dontpng") == 0 || strcmp(argv[i], "-d") == 0) {
       dopng = false;
+    } else if (strcmp(argv[i], "--manhattan") == 0) {
+      distance_algorithm = 1;
+    } else if (strcmp(argv[i], "--square") == 0) {
+      distance_algorithm = 2;
+    } else if (strcmp(argv[i], "--flatter") == 0) {
+      distance_algorithm = 3;
+    } else if (strcmp(argv[i], "--nobottomleft") == 0) {
+      distance_algorithm = 4;
     } else {
       outputfile = argv[i];
     }
