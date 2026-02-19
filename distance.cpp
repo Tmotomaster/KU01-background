@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
       distance_algorithm = 2;
     } else if (strcmp(argv[i], "--flatter") == 0) {
       distance_algorithm = 3;
-    } else if (strcmp(argv[i], "--nobottomleft") == 0) {
+    } else if (strcmp(argv[i], "--nobottomleft") == 0 || strcmp(argv[i], "--nobl") == 0) {
       distance_algorithm = 4;
     } else {
       outputfile = argv[i];
