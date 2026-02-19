@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
     Distance* coords = to_check.front();
     to_check.pop();
     
-    double current_proximity = proximity[coords->y * width + coords->x];
+    // double current_proximity = proximity[coords->y * width + coords->x];
     // if (current_proximity == 0) continue;
 
     double distance_right = calc_distance(coords->y, coords->x + 1, coords->originY, coords->originX);
