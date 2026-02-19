@@ -1,6 +1,6 @@
 # Welcome to the codebase of a KU01-project!
 
-A project where I code art and hope that it represents some "wish" of mine.
+A project where I code art, like background images for the course portfolio.
 
 ## Dependencies
 
