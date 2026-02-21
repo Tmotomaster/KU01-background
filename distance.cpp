@@ -6,6 +6,7 @@
 #include <queue>
 #include <cmath>
 #include <cstring>
+#include <ctime>
 
 #include "lookup_colors.h"
 
@@ -77,12 +78,16 @@ double calc_distance(int y1, int x1, int y2, int x2) {
 }
 
 int main(int argc, char** argv) {
+  srand(time(0));
+
   bool asking = true;
   bool dopng = true;
   string outputfile = "output/distance_output";
   bool reading1 = false;
   string inputppm;
   bool reading_prox = false;
+  int dithering = 0;
+  bool reading_dither = false;
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "--input") == 0 || strcmp(argv[i], "-i") == 0) {
       asking = false;
@@ -95,6 +100,11 @@ int main(int argc, char** argv) {
     } else if (reading_prox) {
       proximity_max = atof(argv[i]);
       reading_prox = false;
+    } else if (strcmp(argv[i], "--dither") == 0) {
+      reading_dither = true;
+    } else if (reading_dither) {
+      dithering = atoi(argv[i]);
+      reading_dither = false;
     } else if (strcmp(argv[i], "--noask") == 0 || strcmp(argv[i], "-n") == 0) {
       asking = false;
     } else if (strcmp(argv[i], "--dontpng") == 0 || strcmp(argv[i], "-d") == 0) {
@@ -177,7 +187,9 @@ int main(int argc, char** argv) {
   uint8_t* proximity_data = new uint8_t[width * height * 3];
   cout << "Converting proximity to colors" << endl;
   for (int i = 0; i < width * height; i++) {
-    uint8_t* result = alphamappable_colors(pow((double)proximity[i] / 255, 1) * 255.);
+    uint8_t value = (uint)(pow((double)proximity[i] / 255, 1) * 255.);
+    value = dithering != 0 ? max(min((int)value + rand() % dithering, 255), 0) : value;
+    uint8_t* result = alphamappable_colors(value);
     proximity_data[i*3  ] = result[0];
     proximity_data[i*3+1] = result[1];
     proximity_data[i*3+2] = result[2];
